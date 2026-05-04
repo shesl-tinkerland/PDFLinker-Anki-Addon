@@ -1446,6 +1446,10 @@ class PDFViewerWindow(QMainWindow):
             open_action = QAction("📂 Open PDF for Study...", self)
             open_action.triggered.connect(self.open_local_pdf)
             toolbar.addAction(open_action)
+
+            refresh_action = QAction("🔄 Refresh Page", self)
+            refresh_action.triggered.connect(self.refresh_pdf)
+            toolbar.addAction(refresh_action)
         else:
             self.setWindowTitle("PDFLinker Reader (Review Mode)")
             self.resize(800, 1000)
@@ -1528,10 +1532,21 @@ class PDFViewerWindow(QMainWindow):
             last_page = get_last_page(file_path)
             self.load_pdf(file_path, last_page)
 
+    def refresh_pdf(self) -> None:
+        if self.current_pdf_path:
+            self.web_view.reload()
+
     def load_pdf(self, path: str, page: str, note: Optional[Note] = None) -> None:
         if not path or not os.path.exists(path):
             return
         self.current_pdf_path = path 
+        
+        pdf_name = os.path.basename(path)
+        if self.mode == "create":
+            self.setWindowTitle(f"PDFLinker Reader (Creator Mode) - {pdf_name}")
+        else:
+            self.setWindowTitle(f"PDFLinker Reader (Review Mode) - {pdf_name}")
+            
         base_viewer_url = QUrl.fromLocalFile(VIEWER_HTML_PATH).toString()
         file_url = QUrl.fromLocalFile(path).toString()
         encoded_file_url = urllib.parse.quote(file_url, safe="%/:=&?~#+!$,;'@()*[]")

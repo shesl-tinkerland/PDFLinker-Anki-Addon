@@ -68,6 +68,9 @@ When reviewing AI-generated cloze cards in the preview window, you can use these
 
 ## ❓ FAQ
 
+**Q: Why can't I highlight text or make annotations directly in Creator Mode?**
+A: PDFLinker is designed to act as a bridge for linking flashcards to specific pages and generating flashcards using AI, rather than replacing your dedicated PDF editor. Because of limitations in saving annotations directly to local files from within Anki, we recommend using your native PDF viewer (like Preview, Adobe Acrobat, or Drawboard) to highlight text or take notes. Once you save your highlights in your native viewer, simply click the "Refresh Page" button in Creator Mode to instantly sync and view your new highlights. You can then use the AI tools to generate flashcards from those sections!
+
 **Q: If a deck is shared with someone else, how do they keep the same linked PDF pages?**
 A: Because PDFLinker links to local files on your computer, anyone you share the deck with must have the exact same PDF saved in the **exact same file path**. 
 * *Pro-tip for sharing:* If you are studying with friends, keep your PDFs in a shared folder (like a root `C:\Study_PDFs` or a synced Dropbox folder) so the path is identical on everyone's computer. Otherwise, the person receiving the deck can use Anki's "Find and Replace" tool in the Browser to update the `PDF_Path` field to match where they saved the PDF on their own machine.
