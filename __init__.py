@@ -1544,6 +1544,7 @@ class PDFViewerWindow(QMainWindow):
         pdf_name = os.path.basename(path)
         if self.mode == "create":
             self.setWindowTitle(f"PDFLinker Reader (Creator Mode) - {pdf_name}")
+            auto_fill_open_editors(path, page)
         else:
             self.setWindowTitle(f"PDFLinker Reader (Review Mode) - {pdf_name}")
             
@@ -1811,3 +1812,33 @@ def setup_gui():
 gui_hooks.reviewer_did_show_answer.append(update_pdf_for_current_card)
 gui_hooks.profile_did_open.append(check_first_run)
 gui_hooks.main_window_did_init.append(setup_gui)
+
+def on_add_cards_did_init(addcards: AddCards) -> None:
+    btn = QPushButton("🧹 Clean PDF Fields")
+    btn.setToolTip("Cleans the PDF_Path and PDF_Page fields in the current note.")
+    btn.setFocusPolicy(Qt.FocusPolicy.NoFocus if hasattr(Qt, 'FocusPolicy') else Qt.NoFocus)  # Prevent it from stealing focus
+    
+    def on_click() -> None:
+        editor = addcards.editor
+        note = getattr(editor, 'note', None)
+        if not note: return
+        
+        changed = False
+        if "PDF_Path" in note and note["PDF_Path"] != "":
+            note["PDF_Path"] = ""
+            changed = True
+        if "PDF_Page" in note and note["PDF_Page"] != "":
+            note["PDF_Page"] = ""
+            changed = True
+            
+        if changed:
+            editor.loadNote()
+            tooltip("PDF fields cleaned")
+            
+    btn.clicked.connect(on_click)
+    
+    layout = addcards.layout()
+    if layout:
+        layout.addWidget(btn)
+
+gui_hooks.add_cards_did_init.append(on_add_cards_did_init)
