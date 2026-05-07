@@ -1808,6 +1808,24 @@ def setup_gui():
     pdflinker_toolbar.addAction(support_action)
 
     mw.addToolBar(pdflinker_toolbar)
+    
+    # Allow hiding/showing toolbar from Anki Tools menu
+    toggle_toolbar_action = QAction("Toggle PDFLinker Toolbar", mw)
+    toggle_toolbar_action.setCheckable(True)
+    
+    config = get_config()
+    show_toolbar = config.get("show_toolbar", True)
+    pdflinker_toolbar.setVisible(show_toolbar)
+    toggle_toolbar_action.setChecked(show_toolbar)
+    
+    def on_toggle_toolbar(checked):
+        pdflinker_toolbar.setVisible(checked)
+        conf = get_config()
+        conf["show_toolbar"] = checked
+        save_config(conf)
+        
+    toggle_toolbar_action.toggled.connect(on_toggle_toolbar)
+    mw.form.menuTools.addAction(toggle_toolbar_action)
 
 gui_hooks.reviewer_did_show_answer.append(update_pdf_for_current_card)
 gui_hooks.profile_did_open.append(check_first_run)
