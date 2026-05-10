@@ -856,17 +856,18 @@ class GeneratedCardsWindow(QMainWindow):
         final_text = self.get_anki_html(text_edit)
         final_extra = self.get_anki_html(extra_edit) if import_extra_cb.isChecked() else ""
         
-        text_fields = ["Text", "Front", "Question"]
-        extra_fields = ["Extra", "Back", "Answer"]
+        config = get_config()
+        text_fields = config.get("text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])
+        extra_fields = config.get("extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])
         
         def update_note():
             note = add_window.editor.note
             changed = False
             for field in note.keys():
-                if field in text_fields or field.lower() == "text":
+                if field in text_fields or field.lower() in [f.lower() for f in text_fields]:
                     note[field] = final_text
                     changed = True
-                elif field in extra_fields or field.lower() == "extra":
+                elif field in extra_fields or field.lower() in [f.lower() for f in extra_fields]:
                     note[field] = final_extra if import_extra_cb.isChecked() else ""
                     changed = True
                     

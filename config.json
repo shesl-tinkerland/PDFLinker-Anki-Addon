@@ -2,6 +2,21 @@
     "gemini_api_key": "",
     "gemini_model": "gemini-3-flash-preview",
     "thinking_level": "",
+    "text_fields": [
+        "Text",
+        "Front",
+        "Question",
+        "Testo",
+        "Fronte",
+        "Domanda"
+    ],
+    "extra_fields": [
+        "Extra",
+        "Back",
+        "Answer",
+        "Retro",
+        "Risposta"
+    ],
     "last_used_profile": "General",
     "prompt_profiles": {
         "General": {
