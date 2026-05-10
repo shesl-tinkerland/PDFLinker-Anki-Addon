@@ -1151,6 +1151,16 @@ class ConfigDialog(QDialog):
             self.language_combo.setCurrentText("English")
         form_layout.addRow("Output Language:", self.language_combo)
         
+        self.text_fields_input = QLineEdit(", ".join(self.config.get("text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])))
+        self.text_fields_input.setPlaceholderText("Text, Front, Question...")
+        self.text_fields_input.setToolTip("Comma-separated list of field names for the Front/Text of the flashcard.")
+        form_layout.addRow("Text Fields:", self.text_fields_input)
+
+        self.extra_fields_input = QLineEdit(", ".join(self.config.get("extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])))
+        self.extra_fields_input.setPlaceholderText("Extra, Back, Answer...")
+        self.extra_fields_input.setToolTip("Comma-separated list of field names for the Back/Extra of the flashcard.")
+        form_layout.addRow("Extra Fields:", self.extra_fields_input)
+        
         layout.addLayout(form_layout)
         
         # Add a helper label for prompts
@@ -1304,6 +1314,9 @@ class ConfigDialog(QDialog):
         selected_thinking = self.thinking_combo.currentText()
         self.config["thinking_level"] = "" if selected_thinking == "none" else selected_thinking
         self.config["output_language"] = self.language_combo.currentText()
+        
+        self.config["text_fields"] = [f.strip() for f in self.text_fields_input.text().split(",") if f.strip()]
+        self.config["extra_fields"] = [f.strip() for f in self.extra_fields_input.text().split(",") if f.strip()]
         
         self.save_current_profile_data()
         self.config["prompt_profiles"] = self.profiles
