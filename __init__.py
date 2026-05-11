@@ -857,8 +857,15 @@ class GeneratedCardsWindow(QMainWindow):
         final_extra = self.get_anki_html(extra_edit) if import_extra_cb.isChecked() else ""
         
         config = get_config()
-        text_fields = config.get("text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])
-        extra_fields = config.get("extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])
+        if self.task == "cloze":
+            text_fields = config.get("cloze_text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])
+            extra_fields = config.get("cloze_extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])
+        elif self.task == "basic":
+            text_fields = config.get("basic_text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])
+            extra_fields = config.get("basic_extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])
+        else:
+            text_fields = ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"]
+            extra_fields = ["Extra", "Back", "Answer", "Retro", "Risposta"]
         
         def update_note():
             note = add_window.editor.note
@@ -1151,15 +1158,25 @@ class ConfigDialog(QDialog):
             self.language_combo.setCurrentText("English")
         form_layout.addRow("Output Language:", self.language_combo)
         
-        self.text_fields_input = QLineEdit(", ".join(self.config.get("text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])))
-        self.text_fields_input.setPlaceholderText("Text, Front, Question...")
-        self.text_fields_input.setToolTip("Comma-separated list of field names for the Front/Text of the flashcard.")
-        form_layout.addRow("Text Fields:", self.text_fields_input)
+        self.cloze_text_fields_input = QLineEdit(", ".join(self.config.get("cloze_text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])))
+        self.cloze_text_fields_input.setPlaceholderText("Text, Front, Question...")
+        self.cloze_text_fields_input.setToolTip("Comma-separated list of field names for the Front/Text of cloze flashcards.")
+        form_layout.addRow("Cloze Text Fields:", self.cloze_text_fields_input)
 
-        self.extra_fields_input = QLineEdit(", ".join(self.config.get("extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])))
-        self.extra_fields_input.setPlaceholderText("Extra, Back, Answer...")
-        self.extra_fields_input.setToolTip("Comma-separated list of field names for the Back/Extra of the flashcard.")
-        form_layout.addRow("Extra Fields:", self.extra_fields_input)
+        self.cloze_extra_fields_input = QLineEdit(", ".join(self.config.get("cloze_extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])))
+        self.cloze_extra_fields_input.setPlaceholderText("Extra, Back, Answer...")
+        self.cloze_extra_fields_input.setToolTip("Comma-separated list of field names for the Back/Extra of cloze flashcards.")
+        form_layout.addRow("Cloze Extra Fields:", self.cloze_extra_fields_input)
+
+        self.basic_text_fields_input = QLineEdit(", ".join(self.config.get("basic_text_fields", ["Text", "Front", "Question", "Testo", "Fronte", "Domanda"])))
+        self.basic_text_fields_input.setPlaceholderText("Text, Front, Question...")
+        self.basic_text_fields_input.setToolTip("Comma-separated list of field names for the Front/Text of basic flashcards.")
+        form_layout.addRow("Basic Text Fields:", self.basic_text_fields_input)
+
+        self.basic_extra_fields_input = QLineEdit(", ".join(self.config.get("basic_extra_fields", ["Extra", "Back", "Answer", "Retro", "Risposta"])))
+        self.basic_extra_fields_input.setPlaceholderText("Extra, Back, Answer...")
+        self.basic_extra_fields_input.setToolTip("Comma-separated list of field names for the Back/Extra of basic flashcards.")
+        form_layout.addRow("Basic Extra Fields:", self.basic_extra_fields_input)
         
         layout.addLayout(form_layout)
         
@@ -1315,8 +1332,10 @@ class ConfigDialog(QDialog):
         self.config["thinking_level"] = "" if selected_thinking == "none" else selected_thinking
         self.config["output_language"] = self.language_combo.currentText()
         
-        self.config["text_fields"] = [f.strip() for f in self.text_fields_input.text().split(",") if f.strip()]
-        self.config["extra_fields"] = [f.strip() for f in self.extra_fields_input.text().split(",") if f.strip()]
+        self.config["cloze_text_fields"] = [f.strip() for f in self.cloze_text_fields_input.text().split(",") if f.strip()]
+        self.config["cloze_extra_fields"] = [f.strip() for f in self.cloze_extra_fields_input.text().split(",") if f.strip()]
+        self.config["basic_text_fields"] = [f.strip() for f in self.basic_text_fields_input.text().split(",") if f.strip()]
+        self.config["basic_extra_fields"] = [f.strip() for f in self.basic_extra_fields_input.text().split(",") if f.strip()]
         
         self.save_current_profile_data()
         self.config["prompt_profiles"] = self.profiles

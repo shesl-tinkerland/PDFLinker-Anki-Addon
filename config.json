@@ -2,7 +2,7 @@
     "gemini_api_key": "",
     "gemini_model": "gemini-3-flash-preview",
     "thinking_level": "",
-    "text_fields": [
+    "cloze_text_fields": [
         "Text",
         "Front",
         "Question",
@@ -10,7 +10,22 @@
         "Fronte",
         "Domanda"
     ],
-    "extra_fields": [
+    "cloze_extra_fields": [
+        "Extra",
+        "Back",
+        "Answer",
+        "Retro",
+        "Risposta"
+    ],
+    "basic_text_fields": [
+        "Text",
+        "Front",
+        "Question",
+        "Testo",
+        "Fronte",
+        "Domanda"
+    ],
+    "basic_extra_fields": [
         "Extra",
         "Back",
         "Answer",
