@@ -36,7 +36,7 @@ USER_FILES_DIR = os.path.join(ADDON_DIR, "user_files")
 CACHE_FILE = os.path.join(USER_FILES_DIR, "pdf_cache.json")
 CONFIG_PATH = os.path.join(ADDON_DIR, "config.json")
 
-PDFJS_RELEASE_URL = "https://github.com/mozilla/pdf.js/releases/download/v3.11.174/pdfjs-3.11.174-dist.zip"
+PDFJS_RELEASE_URL = "https://github.com/mozilla/pdf.js/releases/download/v6.0.227/pdfjs-6.0.227-dist.zip"
 GITHUB_URL = "https://github.com/filcristallo/PDFLinker-Anki-Addon"
 BUY_ME_COFFEE_URL = "https://www.buymeacoffee.com/filippocristallo"
 
