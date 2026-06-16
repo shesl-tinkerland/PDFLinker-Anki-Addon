@@ -36,7 +36,7 @@ USER_FILES_DIR = os.path.join(ADDON_DIR, "user_files")
 CACHE_FILE = os.path.join(USER_FILES_DIR, "pdf_cache.json")
 CONFIG_PATH = os.path.join(ADDON_DIR, "config.json")
 
-PDFJS_RELEASE_URL = "https://github.com/mozilla/pdf.js/releases/download/v6.0.227/pdfjs-6.0.227-legacy-dist.zip"
+PDFJS_RELEASE_URL = "https://github.com/mozilla/pdf.js/releases/download/v3.11.174/pdfjs-3.11.174-dist.zip"
 GITHUB_URL = "https://github.com/filcristallo/PDFLinker-Anki-Addon"
 BUY_ME_COFFEE_URL = "https://www.buymeacoffee.com/filippocristallo"
 
@@ -58,28 +58,8 @@ logger = logging.getLogger("PDFLinker")
 
 def setup_dependencies() -> None:
     """Downloads the PDF viewer in the background so it doesn't freeze Anki."""
-    version_file = os.path.join(PDFJS_DIR, "pdfjs_version.txt")
-    expected_version = "6.0.227-legacy"
-    
-    needs_download = True
-    if os.path.exists(VIEWER_HTML_PATH) and os.path.exists(version_file):
-        try:
-            with open(version_file, "r") as vf:
-                if vf.read().strip() == expected_version:
-                    needs_download = False
-        except Exception:
-            pass
-
-    if not needs_download:
+    if os.path.exists(VIEWER_HTML_PATH):
         return
-
-    # Clear old pdfjs directory if it exists to avoid conflicts
-    if os.path.exists(PDFJS_DIR):
-        import shutil
-        try:
-            shutil.rmtree(PDFJS_DIR)
-        except Exception as e:
-            logger.error(f"Failed to clear old PDF.js directory: {e}")
 
     os.makedirs(PDFJS_DIR, exist_ok=True)
     zip_path = os.path.join(PDFJS_DIR, "pdfjs.zip")
@@ -89,18 +69,6 @@ def setup_dependencies() -> None:
             urllib.request.urlretrieve(PDFJS_RELEASE_URL, zip_path)
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(PDFJS_DIR)
-            with open(version_file, "w") as vf:
-                vf.write(expected_version)
-
-            # Patch viewer.mjs to disable OffscreenCanvas which is broken in many QtWebEngine versions
-            viewer_mjs = os.path.join(PDFJS_DIR, "web", "viewer.mjs")
-            if os.path.exists(viewer_mjs):
-                with open(viewer_mjs, "r", encoding="utf-8") as vm:
-                    vm_data = vm.read()
-                vm_data = vm_data.replace('isOffscreenCanvasSupported: {\n    value: true,', 'isOffscreenCanvasSupported: {\n    value: false,')
-                with open(viewer_mjs, "w", encoding="utf-8") as vm:
-                    vm.write(vm_data)
-
         finally:
             if os.path.exists(zip_path):
                 os.remove(zip_path)
